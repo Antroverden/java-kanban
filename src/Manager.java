@@ -121,20 +121,19 @@ public class Manager {
     void updateEpicStatus(Epic epic) {
         int newCount = 0;
         int doneCount = 0;
-        epic.setStatus(Statuses.NEW);
         for (Integer s : epic.getSubtasksId()) {
             if (subtasks.get(s).getStatus() == Statuses.NEW) {
                 newCount++;
             } else if (subtasks.get(s).getStatus() == Statuses.DONE) {
                 doneCount++;
             }
-            if (newCount == epic.getNumberSubtasks()) {
-                epic.setStatus(Statuses.NEW);
-            } else if (doneCount == epic.getNumberSubtasks()) {
-                epic.setStatus(Statuses.DONE);
-            } else {
-                epic.setStatus(Statuses.IN_PROGRESS);
-            }
+        }
+        if (newCount == epic.getNumberSubtasks()) {
+            epic.setStatus(Statuses.NEW);
+        } else if (doneCount == epic.getNumberSubtasks()) {
+            epic.setStatus(Statuses.DONE);
+        } else {
+            epic.setStatus(Statuses.IN_PROGRESS);
         }
     }
 }
