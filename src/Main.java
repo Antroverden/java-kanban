@@ -1,7 +1,8 @@
 public class Main {
 
     public static void main(String[] args) {
-        Manager manager = new Manager();
+        TaskManager manager = Managers.getDefault();
+
         Task task1 = new Task("one", "task one", Status.NEW);
         Task task2 = new Task("two", "task two", Status.NEW);
         task1.getId();
@@ -22,12 +23,12 @@ public class Main {
         Subtask subtask21 = new Subtask("seven", "task seven", Status.DONE, epicId2);
         manager.addSubtask(subtask21);
 
-        System.out.println(manager.getEpics());
-        System.out.println(manager.getSubtasks());
-        System.out.println(manager.getTasks());
-        manager.deleteSubtask(7);
-        manager.deleteTask(1);
-        System.out.println(manager.getEpics());
-        System.out.println(manager.getSubtasks());
+        for (int i = 0; i < 20; i++) {
+            manager.getTask(1);
+            manager.getTask(2);
+        }
+        manager.getSubtask(7);
+        manager.getEpic(3);
+        System.out.println(manager.getHistory());
     }
 }
