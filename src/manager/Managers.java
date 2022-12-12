@@ -1,3 +1,5 @@
+package manager;
+
 public class Managers {
     private Managers() {
     }
