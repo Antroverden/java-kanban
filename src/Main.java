@@ -42,7 +42,7 @@ public class Main {
             manager.getTask(2);
         }
 
-        manager.deleteTask(1);
+        manager.deleteTask(2);
         manager.deleteEpic(3);
 
         for (Task task : manager.getHistory()) {

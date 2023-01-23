@@ -7,78 +7,55 @@ import java.util.HashMap;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    int idTail = 0;
-    int idHead = 0;
+    private Node first;
+    private Node last;
 
     private final HashMap<Integer, Node> history = new HashMap<>();
 
-    public static class Node {
+    private static class Node {
         Task task;
-        int nextNode;
-        int prevNode;
+        Node next;
+        Node prev;
 
-        Node(int prevNode, Task task, int nextNode) {
+        Node(Node prev, Task task, Node next) {
             this.task = task;
-            this.nextNode = nextNode;
-            this.prevNode = prevNode;
-        }
-
-        public Task getTask() {
-            return task;
-        }
-
-        public int getPrevNode() {
-            return prevNode;
-        }
-
-        public int getNextNode() {
-            return nextNode;
-        }
-
-        public void setNextNode(int nextNode) {
-            this.nextNode = nextNode;
-        }
-
-        public void setPrevNode(int prevNode) {
-            this.prevNode = prevNode;
+            this.next = next;
+            this.prev = prev;
         }
     }
 
     @Override
     public void add(Task task) {
-        if (history.containsKey(task.getId())) {
-            remove(task.getId());
-        }
+        remove(task.getId());
         linkLast(task);
     }
 
     public void linkLast(Task task) {
-        if (idHead == 0) {
-            idHead = task.getId();
-            history.put(task.getId(), new Node(idTail, task, 0));
-            idTail = task.getId();
+        Node node = last;
+        last = new Node(last, task, null);
+        if (node == null) {
+            first = last;
         } else {
-            int prevId = idHead;
-            history.get(idHead).setNextNode(task.getId());
-            idHead = task.getId();
-            history.put(task.getId(), new Node(prevId, task, 0));
+            last.prev = node;
+            node.next = last;
         }
+        history.put(task.getId(), last);
     }
 
     public ArrayList<Task> getTasks() {
-        ArrayList<Task> result = new ArrayList<>(history.size());
-        result.add(getTask(idTail));
-        int idNextNode = history.get(idTail).getNextNode();
-        for (int i = 1; i < history.size(); i++) {
-            result.add(getTask(idNextNode));
-            idNextNode = history.get(idNextNode).getNextNode();
+        ArrayList<Task> result = new ArrayList<>();
+        Node node = first;
+        for (int i = 0; i < history.size(); i++) {
+            result.add(node.task);
+            node = node.next;
         }
         return result;
     }
 
     @Override
     public void remove(int id) {
-        removeNode(history.get(id));
+        Node node = history.remove(id);
+        removeNode(node);
     }
 
     @Override
@@ -88,25 +65,16 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     public void removeNode(Node node) {
         if (node != null) {
-            if (history.containsKey(node.getTask().getId())) {
-                if ((node.getPrevNode() != 0) && (node.getNextNode() != 0)) {
-                    history.get(node.getPrevNode()).setNextNode(node.getNextNode());
-                    history.get(node.getNextNode()).setPrevNode(node.getPrevNode());
-                }
-                if (node.getTask().getId() == idHead) {
-                    idHead = node.getPrevNode();
-                    history.get(node.getPrevNode()).setNextNode(0);
-                }
-                if (node.getTask().getId() == idTail) {
-                    idTail = node.getNextNode();
-                    history.get(node.getNextNode()).setPrevNode(0);
-                }
-                history.remove(node.getTask().getId());
+            if (node.prev == null) {
+                first = node.next;
+                node.next.prev = null;
+            } else if (node.next == null) {
+                last = node.prev;
+                node.prev.next = null;
+            } else {
+                node.prev.next = node.next;
+                node.next.prev = node.prev;
             }
         }
-    }
-
-    public Task getTask(int id) {
-        return history.get(id).getTask();
     }
 }
