@@ -21,21 +21,32 @@ public class Main {
 
         Subtask subtask1 = new Subtask("four", "task four", Status.NEW, epicId1);
         Subtask subtask12 = new Subtask("five", "task five", Status.DONE, epicId1);
+        Subtask subtask13 = new Subtask("six", "task six", Status.IN_PROGRESS, epicId1);
         manager.addSubtask(subtask1);
         manager.addSubtask(subtask12);
+        manager.addSubtask(subtask13);
 
-        Epic epic2 = new Epic("six", "task six", Status.NEW);
-        int epicId2 = manager.addEpicTask(epic2);
-
-        Subtask subtask21 = new Subtask("seven", "task seven", Status.DONE, epicId2);
-        manager.addSubtask(subtask21);
+        Epic epic2 = new Epic("seven", "task seven", Status.NEW);
+        manager.addEpicTask(epic2);
 
         for (int i = 0; i < 20; i++) {
             manager.getTask(1);
             manager.getTask(2);
+            manager.getSubtask(5);
+            manager.getSubtask(4);
+            manager.getEpic(7);
         }
-        manager.getSubtask(7);
+        manager.getEpic(7);
         manager.getEpic(3);
-        System.out.println(manager.getHistory());
+        for (int i = 0; i < 20; i++) {
+            manager.getTask(2);
+        }
+
+        manager.deleteTask(1);
+        manager.deleteEpic(3);
+
+        for (Task task : manager.getHistory()) {
+            System.out.println(task);
+        }
     }
 }
