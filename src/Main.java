@@ -16,6 +16,11 @@ public class Main {
         manager.addTask(task1);
         manager.addTask(task2);
 
+        manager.getTask(1);
+        manager.getTask(2);
+        manager.deleteTask(2);
+        manager.deleteTask(1);
+
         Epic epic = new Epic("three", "task three", Status.NEW);
         int epicId1 = manager.addEpicTask(epic);
 
@@ -30,20 +35,13 @@ public class Main {
         manager.addEpicTask(epic2);
 
         for (int i = 0; i < 20; i++) {
-            manager.getTask(1);
-            manager.getTask(2);
             manager.getSubtask(5);
             manager.getSubtask(4);
             manager.getEpic(7);
         }
         manager.getEpic(7);
         manager.getEpic(3);
-        for (int i = 0; i < 20; i++) {
-            manager.getTask(2);
-        }
-
-        manager.deleteTask(2);
-        manager.deleteEpic(3);
+        manager.getEpic(7);
 
         for (Task task : manager.getHistory()) {
             System.out.println(task);
