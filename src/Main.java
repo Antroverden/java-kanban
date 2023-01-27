@@ -44,7 +44,9 @@ public class Main {
         manager.addSubtask(subtask13);
 
         Epic epic2 = new Epic("seven", "task seven", Status.NEW);
-        manager.addEpicTask(epic2);
+        int epicId2 = manager.addEpicTask(epic2);
+        Subtask subtask14 = new Subtask("eight", "task eight", Status.IN_PROGRESS, epicId2);
+        manager.addSubtask(subtask14);
 
         for (int i = 0; i < 20; i++) {
             manager.getSubtask(5);
