@@ -61,15 +61,17 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return taskManager;
     }
 
-    protected void save() throws ManagerSaveException {
+    protected void save() {
         List<Task> allTasks = new ArrayList<>(tasks.values());
         allTasks.addAll(subtasks.values());
         allTasks.addAll(epicTasks.values());
         allTasks.sort(Comparator.comparingInt(Task::getId));
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            writer.write("id,type,name,status,description,epic\n");
+            writer.write("id,type,name,status,description,epic");
+            writer.newLine();
             for (Task task : allTasks) {
-                writer.write(CSVTaskFormat.toString(task) + "\n");
+                writer.write(CSVTaskFormat.toString(task));
+                writer.newLine();
             }
             writer.newLine();
             writer.write(CSVTaskFormat.toString(getHistory()));
