@@ -6,6 +6,8 @@ public class Task {
     protected int id;
     protected Status status;
 
+    protected TaskType type;
+
     public Task(String name, String description, Status status) {
         this.name = name;
         this.description = description;
@@ -32,5 +34,21 @@ public class Task {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setType(TaskType type) {
+        this.type = type;
     }
 }

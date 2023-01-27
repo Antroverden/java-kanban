@@ -1,3 +1,4 @@
+import manager.FileBackedTasksManager;
 import manager.Managers;
 import manager.TaskManager;
 import tasks.Epic;
@@ -5,10 +6,22 @@ import tasks.Status;
 import tasks.Subtask;
 import tasks.Task;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import static manager.Managers.ROOT;
+
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         TaskManager manager = Managers.getDefault();
+        File file = new File(ROOT + File.separator + "task.csv");
+        Files.createDirectories(Path.of("resources"));
+        if (!file.exists()) {
+            Files.createFile(Path.of(file.getPath()));
+        }
 
         Task task1 = new Task("one", "task one", Status.NEW);
         Task task2 = new Task("two", "task two", Status.NEW);
@@ -19,7 +32,6 @@ public class Main {
         manager.getTask(1);
         manager.getTask(2);
         manager.deleteTask(2);
-        manager.deleteTask(1);
 
         Epic epic = new Epic("three", "task three", Status.NEW);
         int epicId1 = manager.addEpicTask(epic);
@@ -43,8 +55,9 @@ public class Main {
         manager.getEpic(3);
         manager.getEpic(7);
 
-        for (Task task : manager.getHistory()) {
-            System.out.println(task);
-        }
+        FileBackedTasksManager fileBackedTasksManager = FileBackedTasksManager.loadFromFile(file);
+
+        manager.getHistory().forEach(System.out::println);
+
     }
 }
