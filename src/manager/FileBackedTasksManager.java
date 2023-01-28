@@ -33,7 +33,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             if (lines.get(i).isBlank()) {
                 break;
             } else {
-                Task task = taskManager.FromString(lines.get(i));
+                Task task = taskManager.fromString(lines.get(i));
                 if (task instanceof Epic) {
                     Epic epic = (Epic) task;
                     taskManager.epicTasks.put(epic.getId(), epic);
@@ -65,9 +65,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 + task.getStatus() + "," + "Description " + task.getDescription() + "," + getEpicId(task);
     }
 
-    public Task FromString(String line) {
+    public Task fromString(String value) {
         Task task;
-        String[] values = line.split(",");
+        String[] values = value.split(",");
         final int taskId = Integer.parseInt(values[0]);
         if (taskId > id) {
             id = taskId;
@@ -95,8 +95,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 .collect(Collectors.joining(","));
     }
 
-    public static List<Integer> historyFromString(String line) {
-        return Arrays.stream(line.split(",")).map(Integer::parseInt).collect(Collectors.toList());
+    public static List<Integer> historyFromString(String value) {
+        return Arrays.stream(value.split(",")).map(Integer::parseInt).collect(Collectors.toList());
     }
 
     public String getEpicId(Task task) {

@@ -1,7 +1,6 @@
 package manager;
 
 public class Managers {
-    public static final String ROOT = "resources";
 
     private Managers() {
     }
