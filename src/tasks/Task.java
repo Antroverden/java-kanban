@@ -12,6 +12,7 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = status;
+        type = TaskType.TASK;
     }
 
     @Override
@@ -48,7 +49,7 @@ public class Task {
         return description;
     }
 
-    public void setType(TaskType type) {
-        this.type = type;
+    public TaskType getType() {
+        return type;
     }
 }
