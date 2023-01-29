@@ -7,18 +7,82 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.nio.file.Path;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
+    public static final String ROOT = "resources";
     private final File file;
 
-    public FileBackedTasksManager(File file) {
+    private FileBackedTasksManager(File file) {
         this.file = file;
+    }
+
+    public static void main(String[] args) throws IOException {
+
+        File file = new File(ROOT + File.separator + "task.csv");
+        Files.createDirectories(Path.of("resources"));
+        if (!file.exists()) {
+            Files.createFile(Path.of(file.getPath()));
+        }
+        FileBackedTasksManager manager = new FileBackedTasksManager(file);
+
+        Task task1 = new Task("one", "task one", Status.NEW);
+        Task task2 = new Task("two", "task two", Status.NEW);
+        task1.getId();
+        manager.addTask(task1);
+        manager.addTask(task2);
+
+        manager.getTask(1);
+        manager.getTask(2);
+        manager.deleteTask(2);
+
+        Epic epic = new Epic("three", "task three", Status.NEW);
+        int epicId1 = manager.addEpicTask(epic);
+
+        Subtask subtask1 = new Subtask("four", "task four", Status.NEW, epicId1);
+        Subtask subtask12 = new Subtask("five", "task five", Status.DONE, epicId1);
+        Subtask subtask13 = new Subtask("six", "task six", Status.IN_PROGRESS, epicId1);
+        manager.addSubtask(subtask1);
+        manager.addSubtask(subtask12);
+        manager.addSubtask(subtask13);
+
+        Epic epic2 = new Epic("seven", "task seven", Status.NEW);
+        int epicId2 = manager.addEpicTask(epic2);
+        Subtask subtask14 = new Subtask("eight", "task eight", Status.IN_PROGRESS, epicId2);
+        manager.addSubtask(subtask14);
+
+        for (int i = 0; i < 20; i++) {
+            manager.getSubtask(5);
+            manager.getSubtask(4);
+            manager.getEpic(7);
+        }
+        manager.getEpic(7);
+        manager.getEpic(3);
+        manager.getEpic(7);
+
+        FileBackedTasksManager fileBackedTasksManager = loadFromFile(file);
+
+        manager.getHistory().forEach(System.out::println);
+        fileBackedTasksManager.getHistory().forEach(System.out::println);
+        assert manager.equals(fileBackedTasksManager);
+
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        FileBackedTasksManager that = (FileBackedTasksManager) o;
+        return Objects.equals(file, that.file);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), file);
     }
 
     public static FileBackedTasksManager loadFromFile(File file) {
@@ -60,12 +124,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return taskManager;
     }
 
-    public String toString(Task task) {
+    private String toString(Task task) {
         return task.getId() + "," + task.getType() + "," + task.getName() + ","
                 + task.getStatus() + "," + "Description " + task.getDescription() + "," + getEpicId(task);
     }
 
-    public Task fromString(String value) {
+    private Task fromString(String value) {
         Task task;
         String[] values = value.split(",");
         final int taskId = Integer.parseInt(values[0]);
@@ -75,7 +139,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         final TaskType type = TaskType.valueOf(values[1]);
         final String name = values[2];
         final Status status = Status.valueOf(values[3]);
-        final String description = values[4];
+        final String description = values[4].substring(12);
         if (type.equals(TaskType.TASK)) {
             task = new Task(name, description, status);
         } else if (type.equals(TaskType.SUBTASK)) {
@@ -90,16 +154,16 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return task;
     }
 
-    public static String historyToString(HistoryManager manager) {
+    private static String historyToString(HistoryManager manager) {
         return manager.getHistory().stream().map(task -> task.getId().toString())
                 .collect(Collectors.joining(","));
     }
 
-    public static List<Integer> historyFromString(String value) {
+    private static List<Integer> historyFromString(String value) {
         return Arrays.stream(value.split(",")).map(Integer::parseInt).collect(Collectors.toList());
     }
 
-    public String getEpicId(Task task) {
+    private String getEpicId(Task task) {
         if (task instanceof Subtask) {
             return ((Subtask) task).getEpicId().toString();
         } else {
@@ -107,7 +171,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
-    protected void save() {
+    private void save() {
         List<Task> allTasks = new ArrayList<>(tasks.values());
         allTasks.addAll(subtasks.values());
         allTasks.addAll(epicTasks.values());
