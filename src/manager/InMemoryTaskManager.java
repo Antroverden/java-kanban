@@ -5,7 +5,10 @@ import tasks.Status;
 import tasks.Subtask;
 import tasks.Task;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, Task> tasks = new HashMap<>();
@@ -41,20 +44,6 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.remove(task.getId());
         }
         tasks.clear();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        InMemoryTaskManager that = (InMemoryTaskManager) o;
-        return id == that.id && Objects.equals(tasks, that.tasks) && Objects.equals(subtasks, that.subtasks)
-                && Objects.equals(epicTasks, that.epicTasks) && Objects.equals(historyManager, that.historyManager);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(tasks, subtasks, epicTasks, historyManager, id);
     }
 
     @Override

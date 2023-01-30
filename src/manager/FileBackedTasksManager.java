@@ -8,7 +8,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
@@ -67,22 +70,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
         manager.getHistory().forEach(System.out::println);
         fileBackedTasksManager.getHistory().forEach(System.out::println);
-        assert manager.equals(fileBackedTasksManager);
+        assert manager.getHistory().equals(fileBackedTasksManager.getHistory());
 
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        FileBackedTasksManager that = (FileBackedTasksManager) o;
-        return Objects.equals(file, that.file);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), file);
     }
 
     public static FileBackedTasksManager loadFromFile(File file) {

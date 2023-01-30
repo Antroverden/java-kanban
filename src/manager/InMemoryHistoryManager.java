@@ -4,7 +4,6 @@ import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
@@ -12,19 +11,6 @@ public class InMemoryHistoryManager implements HistoryManager {
     private Node last;
 
     private final HashMap<Integer, Node> history = new HashMap<>();
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        InMemoryHistoryManager that = (InMemoryHistoryManager) o;
-        return Objects.equals(getTasks(), that.getTasks()) && Objects.equals(history.keySet(), that.history.keySet());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getTasks(), history.keySet());
-    }
 
     private static class Node {
         Task task;
