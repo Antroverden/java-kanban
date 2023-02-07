@@ -1,5 +1,7 @@
 package tasks;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class Task {
@@ -9,6 +11,35 @@ public class Task {
     protected Status status;
 
     protected TaskType type;
+
+    protected long duration;
+
+    protected LocalDateTime startTime;
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id && duration == task.duration && Objects.equals(name, task.name)
+                && Objects.equals(description, task.description) && status == task.status && type == task.type
+                && Objects.equals(startTime, task.startTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, description, id, status, type, duration, startTime);
+    }
+
+    public Task(String name, String description, Status status, long duration, LocalDateTime startTime) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.duration = duration;
+        this.startTime = startTime;
+        type = TaskType.TASK;
+    }
 
     public Task(String name, String description, Status status) {
         this.name = name;
@@ -25,6 +56,18 @@ public class Task {
                 ", id=" + id +
                 ", status='" + status + '\'' +
                 '}';
+    }
+
+    public LocalDateTime getEndTime() {
+        if (startTime != null) {
+            return startTime.plus(duration, ChronoUnit.MINUTES);
+        } else {
+            return null;
+        }
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 
     public Integer getId() {
@@ -51,18 +94,16 @@ public class Task {
         return description;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Task task = (Task) o;
-        return id == task.id && Objects.equals(name, task.name) && Objects.equals(description, task.description)
-                && status == task.status && type == task.type;
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, description, id, status, type);
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public long getDuration() {
+        return duration;
     }
 
     public TaskType getType() {
