@@ -42,6 +42,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 if (task instanceof Epic) {
                     Epic epic = (Epic) task;
                     taskManager.epicTasks.put(epic.getId(), epic);
+                    taskManager.prioritizedTasks.add(epic);
                 } else if (task instanceof Subtask) {
                     Subtask subtask = (Subtask) task;
                     taskManager.subtasks.put(subtask.getId(), subtask);
@@ -70,11 +71,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     private String toString(Task task) {
-        String startTime = task.getStartTime() == null ? "null" : task.getStartTime().format(dateTimeFormatter);
-        String endTime = task.getEndTime() == null ? "null" : task.getEndTime().format(dateTimeFormatter);
+        String startTime = task.getStartTime() == null ? " " : task.getStartTime().format(dateTimeFormatter);
         return task.getId() + "," + task.getType() + "," + task.getName() + ","
                 + task.getStatus() + "," + "Description " + task.getDescription() + "," + getEpicId(task) + ","
-                + task.getDuration() + "," + startTime + "," + endTime;
+                + task.getDuration() + "," + startTime;
     }
 
     private Task fromString(String value) {
@@ -89,7 +89,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         final Status status = Status.valueOf(values[3]);
         final String description = values[4].substring(12);
         final long duration = Long.parseLong(values[6]);
-        final LocalDateTime startTime = values[7].equals("null") ?
+        final LocalDateTime startTime = values[7].equals(" ") ?
                 null : LocalDateTime.parse(values[7], dateTimeFormatter);
         if (type.equals(TaskType.TASK)) {
             task = new Task(name, description, status, duration, startTime);
@@ -97,9 +97,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             final int epicId = Integer.parseInt(values[5]);
             task = new Subtask(name, description, status, epicId, duration, startTime);
         } else if (type.equals(TaskType.EPIC)) {
-            final LocalDateTime endTime = values[8].equals("null") ?
-                    null : LocalDateTime.parse(values[8], dateTimeFormatter);
-            task = new Epic(name, description, status, duration, startTime, endTime);
+            task = new Epic(name, description, status, duration, startTime);
         } else {
             throw new RuntimeException("Задача неизвестного типа");
         }
@@ -130,7 +128,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         allTasks.addAll(epicTasks.values());
         allTasks.sort(Comparator.comparingInt(Task::getId));
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            writer.write("id,type,name,status,description,epic,duration,startTime,endTime");
+            writer.write("id,type,name,status,description,epic,duration,startTime");
             writer.newLine();
             for (Task task : allTasks) {
                 writer.write(toString(task));

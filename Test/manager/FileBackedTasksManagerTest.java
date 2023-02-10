@@ -3,8 +3,6 @@ package manager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tasks.Epic;
-import tasks.Status;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,8 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static manager.FileBackedTasksManager.ROOT;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {
 
@@ -54,13 +51,12 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
 
     @Test
     void loadFromFileWhenEpicWithoutSubtasks() {
-        initializeTasks();
-        Epic epic = new Epic("three", "task three", Status.NEW);
-        taskManager.addEpicTask(epic);
+        initializeAndAddTasks();
+        assertNotNull(taskManager.getTasks());
         FileBackedTasksManager fileBackedTasksManager1 = FileBackedTasksManager.loadFromFile(file);
         assertEquals(taskManager.getTasks(), fileBackedTasksManager1.getTasks(), "Правильное восстановление");
 
-        taskManager.deleteEpic(epic.getId());
+        taskManager.deleteEpic(epic1.getId());
         FileBackedTasksManager fileBackedTasksManager2 = FileBackedTasksManager.loadFromFile(file);
         assertEquals(taskManager.getTasks(), fileBackedTasksManager2.getTasks(), "Правильное восстановление");
     }

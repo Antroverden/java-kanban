@@ -53,7 +53,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
         epic1 = new Epic("four", "task four", Status.NEW);
         int epicId1 = taskManager.addEpicTask(epic1);
         subtask5 = new Subtask("five", "task five", Status.DONE, epicId1);
-        subtask6 = new Subtask("six", "task six", Status.IN_PROGRESS, epicId1, 10, qq.plusHours(3));
+        subtask6 = new Subtask("six", "task six", Status.IN_PROGRESS, epicId1, 10,
+                qq.plusHours(3));
         subtask7 = new Subtask("seven", "task seven", Status.NEW, epicId1, 10, qq.plusHours(2));
         taskManager.addSubtask(subtask5);
         taskManager.addSubtask(subtask6);
@@ -246,26 +247,31 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Task task = new Task("one", "task one", Status.NEW);
         taskManager.updateTask(task);
         assertEquals(List.of(task1, task2, task3), taskManager.getTasks());
+        assertEquals(8, taskManager.getPrioritizedTasks().size());
 
         task.setId(2000);
         taskManager.updateTask(task);
         assertEquals(List.of(task1, task2, task3), taskManager.getTasks());
+        assertEquals(8, taskManager.getPrioritizedTasks().size());
 
         task.setId(1);
         taskManager.updateTask(task);
         assertEquals(3, taskManager.getTasks().size());
         assertEquals(List.of(task, task2, task3), taskManager.getTasks());
+        assertEquals(8, taskManager.getPrioritizedTasks().size());
     }
 
     @Test
     void updateSubtask() {
         taskManager.updateSubtask(subtask5);
         assertTrue(taskManager.getSubtasks().isEmpty());
+        assertTrue(taskManager.getPrioritizedTasks().isEmpty());
 
         initializeAndAddTasks();
         Subtask task = new Subtask("one", "task one", Status.NEW, 2000);
         taskManager.updateSubtask(task);
         assertEquals(List.of(subtask5, subtask6, subtask7), taskManager.getSubtasks());
+        assertEquals(8, taskManager.getPrioritizedTasks().size());
 
         task.setId(2000);
         taskManager.updateSubtask(task);
@@ -292,15 +298,19 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void updateEpic() {
         taskManager.updateEpic(epic1);
         assertTrue(taskManager.getEpics().isEmpty());
+        assertTrue(taskManager.getPrioritizedTasks().isEmpty());
 
         initializeAndAddTasks();
         Epic task = new Epic("one", "task one", Status.NEW);
+        assertEquals(8, taskManager.getPrioritizedTasks().size());
         taskManager.updateEpic(task);
         assertEquals(List.of(epic1, epic2), taskManager.getEpics());
+        assertEquals(8, taskManager.getPrioritizedTasks().size());
 
         task.setId(2000);
         taskManager.updateEpic(task);
         assertEquals(List.of(epic1, epic2), taskManager.getEpics());
+        assertEquals(8, taskManager.getPrioritizedTasks().size());
 
         task.setId(4);
         taskManager.updateEpic(task);
@@ -313,7 +323,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.addSubtask(subtask5);
         epic2 = new Epic("eight", "task eight", Status.NEW);
         int epicId2 = taskManager.addEpicTask(epic2);
-        subtask6 = new Subtask("six", "task six", Status.IN_PROGRESS, epicId2, 10, qq.plusHours(3));
+        subtask6 = new Subtask("six", "task six", Status.IN_PROGRESS, epicId2, 10, qq.plusHours(1));
         taskManager.addSubtask(subtask6);
 
         Epic task2 = new Epic("two", "task two", Status.NEW);
@@ -437,6 +447,13 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Epic epic1 = new Epic("three", "task three", Status.IN_PROGRESS);
         epic1.setId(1);
         assertEquals(epic1.getStatus(), this.epic1.getStatus(), "Статус эпика IN_PROGRESS");
+    }
+
+    @Test
+    void updateEpicStatusDurationTest() {
+        initializeAndAddTasks();
+        long subtasksDuration = taskManager.getSubtasks().stream().mapToLong(Task::getDuration).sum();
+        assertEquals(subtasksDuration, epic1.getDuration());
     }
 
     @Test

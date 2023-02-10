@@ -2,20 +2,25 @@ package tasks;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class Epic extends Task {
 
-    protected ArrayList<Integer> subtasks = new ArrayList<>();
+    protected Set<Integer> subtasks = new HashSet<>();
 
     private LocalDateTime endTime;
 
-    public Epic(String name, String description, Status status, long duration, LocalDateTime startTime,
-                LocalDateTime endTime) {
+    public Epic(String name, String description, Status status, long duration, LocalDateTime startTime) {
         super(name, description, status, duration, startTime);
         type = TaskType.EPIC;
         this.startTime = startTime;
-        this.endTime = endTime;
+    }
+
+    public Epic(String name, String description, Status status) {
+        super(name, description, status);
+        type = TaskType.EPIC;
     }
 
     @Override
@@ -32,11 +37,6 @@ public class Epic extends Task {
         return Objects.hash(super.hashCode(), endTime);
     }
 
-    public Epic(String name, String description, Status status) {
-        super(name, description, status);
-        type = TaskType.EPIC;
-    }
-
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
@@ -47,11 +47,10 @@ public class Epic extends Task {
     }
 
     public ArrayList<Integer> getSubtasksId() {
-        return subtasks;
+        return new ArrayList<>(subtasks);
     }
 
     public void addSubTask(Integer subtaskId) {
-        subtasks.remove(subtaskId);
         subtasks.add(subtaskId);
     }
 

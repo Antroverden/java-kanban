@@ -16,22 +16,6 @@ public class Task {
 
     protected LocalDateTime startTime;
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Task task = (Task) o;
-        return id == task.id && duration == task.duration && Objects.equals(name, task.name)
-                && Objects.equals(description, task.description) && status == task.status && type == task.type
-                && Objects.equals(startTime, task.startTime);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, description, id, status, type, duration, startTime);
-    }
-
     public Task(String name, String description, Status status, long duration, LocalDateTime startTime) {
         this.name = name;
         this.description = description;
@@ -46,6 +30,21 @@ public class Task {
         this.description = description;
         this.status = status;
         type = TaskType.TASK;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id && duration == task.duration && Objects.equals(name, task.name)
+                && Objects.equals(description, task.description) && status == task.status && type == task.type
+                && Objects.equals(startTime, task.startTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, description, id, status, type, duration, startTime);
     }
 
     @Override
