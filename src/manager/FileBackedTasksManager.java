@@ -22,7 +22,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd_MM_yyyy|HH:mm");
 
-    FileBackedTasksManager(File file) {
+    protected FileBackedTasksManager(File file) {
         this.file = file;
     }
 
@@ -122,7 +122,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
-    private void save() {
+    protected void save() {
         List<Task> allTasks = new ArrayList<>(tasks.values());
         allTasks.addAll(subtasks.values());
         allTasks.addAll(epicTasks.values());
@@ -144,6 +144,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public static class ManagerSaveException extends RuntimeException {
         public ManagerSaveException(Exception e) {
             super(e);
+        }
+
+        public ManagerSaveException(String message) {
+            super(message);
         }
     }
 

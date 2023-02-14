@@ -63,6 +63,13 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.addEpicTask(epic2);
     }
 
+    void getSomeTasks() {
+        taskManager.getTask(1);
+        taskManager.getTask(3);
+        taskManager.getEpic(4);
+        taskManager.getSubtask(5);
+    }
+
     @Test
     void getTasks() {
         assertTrue(taskManager.getTasks().isEmpty());
@@ -132,10 +139,9 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void getEpicSubtasks() {
         assertTrue(taskManager.getTasks().isEmpty());
-        assertNull(taskManager.getEpicSubtasks(epic1));
         initializeAndAddTasks();
-        assertEquals(new ArrayList<>(List.of(subtask5, subtask6, subtask7)), taskManager.getEpicSubtasks(epic1));
-        assertEquals(3, taskManager.getEpicSubtasks(epic1).size());
+        assertEquals(new ArrayList<>(List.of(subtask5, subtask6, subtask7)), taskManager.getEpicSubtasks(epic1.getId()));
+        assertEquals(3, taskManager.getEpicSubtasks(epic1.getId()).size());
     }
 
     @Test
@@ -365,7 +371,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.deleteEpic(4);
         assertNull(taskManager.getEpic(4));
         assertEquals(1, taskManager.getEpics().size());
-        assertNull(taskManager.getEpicSubtasks(epic1));
+        assertNull(taskManager.getEpicSubtasks(epic1.getId()));
         assertTrue(taskManager.getSubtasks().isEmpty());
     }
 

@@ -34,7 +34,7 @@ public class InMemoryTaskManager implements TaskManager {
         LocalDateTime startTime = null;
         LocalDateTime endTime = null;
         if (!epic.getSubtasksId().isEmpty()) {
-            for (Subtask subtask : getEpicSubtasks(epic)) {
+            for (Subtask subtask : getEpicSubtasks(epic.getId())) {
                 if (subtask.getStartTime() == null) {
                     continue;
                 }
@@ -145,8 +145,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Subtask> getEpicSubtasks(Epic epic) {
-        if (epic != null && epicTasks.containsKey(epic.getId())) {
+    public ArrayList<Subtask> getEpicSubtasks(int id) {
+        Epic epic = epicTasks.get(id);
+        if (epic != null && epicTasks.containsKey(id)) {
             ArrayList<Subtask> subtask = new ArrayList<>();
             for (int subtaskId : epic.getSubtasksId()) {
                 subtask.add(subtasks.get(subtaskId));
