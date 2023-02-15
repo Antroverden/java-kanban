@@ -49,6 +49,7 @@ public class HttpTaskServer {
                         System.out.println("/tasks ждёт GET-запрос, а получил: " + h.getRequestMethod());
                         h.sendResponseHeaders(405, 0);
                     }
+                    break;
                 case "task":
                     handleTask(h);
                     break;
@@ -133,6 +134,7 @@ public class HttpTaskServer {
                 }
             }
             h.sendResponseHeaders(200, 0);
+            return;
             default: {
                 System.out.println("Неверный запрос: " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);
@@ -190,6 +192,7 @@ public class HttpTaskServer {
                 }
             }
             h.sendResponseHeaders(200, 0);
+            return;
             default: {
                 System.out.println("Неверный запрос: " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);
@@ -246,6 +249,7 @@ public class HttpTaskServer {
                     System.out.println("Задача успешно обновлена!");
                 }
                 h.sendResponseHeaders(200, 0);
+                return;
             }
             default: {
                 System.out.println("Неверный запрос: " + h.getRequestMethod());

@@ -31,8 +31,8 @@ public class HttpTaskManager extends FileBackedTasksManager {
     protected void save() {
         String jsonTasks = gson.toJson(new ArrayList<>(tasks.values()));
         client.put("tasks", jsonTasks);
-        String jsonSubtascs = gson.toJson(new ArrayList<>(subtasks.values()));
-        client.put("subtasks", jsonSubtascs);
+        String jsonSubtasks = gson.toJson(new ArrayList<>(subtasks.values()));
+        client.put("subtasks", jsonSubtasks);
         String jsonEpics = gson.toJson(new ArrayList<>(epicTasks.values()));
         client.put("epics", jsonEpics);
         String jsonHistory = gson.toJson(historyManager.getHistory().stream()
