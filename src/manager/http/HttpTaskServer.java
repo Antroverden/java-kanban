@@ -3,7 +3,6 @@ package manager.http;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
-import manager.Managers;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
@@ -22,7 +21,7 @@ public class HttpTaskServer {
 
     public HttpTaskServer() throws IOException {
         this.taskManager = new HttpTaskManager("http://localhost:8078/", false);
-        gson = Managers.getGson();
+        gson = new Gson();
         server = HttpServer.create(new InetSocketAddress("localhost", PORT), 0);
         server.createContext("/tasks", this::handler);
     }
@@ -31,6 +30,7 @@ public class HttpTaskServer {
         try {
             System.out.println(h.getRequestURI());
             final String path = h.getRequestURI().getPath().substring("/tasks/".length());
+            final String query = h.getRequestURI().getQuery();
             switch (path) {
                 case "":
                     if ("GET".equals(h.getRequestMethod())) {
@@ -51,14 +51,13 @@ public class HttpTaskServer {
                     }
                     break;
                 case "task":
-                    handleTask(h);
+                    handleTask(h, query);
                     break;
                 case "subtask":
-                    handleSubtask(h);
+                    handleSubtask(h, query);
                     break;
                 case "subtask/epic":
                     if ("GET".equals(h.getRequestMethod())) {
-                        final String query = h.getRequestURI().getQuery();
                         String idParam = query.substring(3);
                         final int id = Integer.parseInt(idParam);
                         final List<Subtask> subtasks = taskManager.getEpicSubtasks(id);
@@ -71,7 +70,7 @@ public class HttpTaskServer {
                     }
                     break;
                 case "epic":
-                    handleEpic(h);
+                    handleEpic(h, query);
                     break;
                 default:
                     System.out.println("Неизвестный запрос");
@@ -84,8 +83,7 @@ public class HttpTaskServer {
         }
     }
 
-    private void handleTask(HttpExchange h) throws IOException {
-        final String query = h.getRequestURI().getQuery();
+    private void handleTask(HttpExchange h, String query) throws IOException {
         switch (h.getRequestMethod()) {
             case "GET": {
                 if (query == null) {
@@ -142,8 +140,7 @@ public class HttpTaskServer {
         }
     }
 
-    private void handleSubtask(HttpExchange h) throws IOException {
-        final String query = h.getRequestURI().getQuery();
+    private void handleSubtask(HttpExchange h, String query) throws IOException {
         switch (h.getRequestMethod()) {
             case "GET": {
                 if (query == null) {
@@ -200,8 +197,7 @@ public class HttpTaskServer {
         }
     }
 
-    private void handleEpic(HttpExchange h) throws IOException {
-        final String query = h.getRequestURI().getQuery();
+    private void handleEpic(HttpExchange h, String query) throws IOException {
         switch (h.getRequestMethod()) {
             case "GET": {
                 if (query == null) {

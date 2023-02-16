@@ -1,7 +1,5 @@
 package manager.http;
 
-import manager.FileBackedTasksManager;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -25,12 +23,12 @@ public class KVTaskClient {
             HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url + "register")).GET().build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200) {
-                throw new FileBackedTasksManager.ManagerSaveException("Error" + response.statusCode());
+                throw new HttpTaskManager.httpTaskManagerException("Error" + response.statusCode());
             }
             return response.body();
 
         } catch (IOException | InterruptedException e) {
-            throw new FileBackedTasksManager.ManagerSaveException(e);
+            throw new HttpTaskManager.httpTaskManagerException(e);
         }
     }
 
@@ -43,12 +41,12 @@ public class KVTaskClient {
                     .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200) {
-                throw new FileBackedTasksManager.ManagerSaveException("Error" + response.statusCode());
+                throw new HttpTaskManager.httpTaskManagerException("Error" + response.statusCode());
             }
             return response.body();
 
         } catch (IOException | InterruptedException e) {
-            throw new FileBackedTasksManager.ManagerSaveException(e);
+            throw new HttpTaskManager.httpTaskManagerException(e);
         }
     }
 
@@ -61,10 +59,10 @@ public class KVTaskClient {
                     .build();
             HttpResponse<Void> response = client.send(request, HttpResponse.BodyHandlers.discarding());
             if (response.statusCode() != 200) {
-                throw new FileBackedTasksManager.ManagerSaveException("Error" + response.statusCode());
+                throw new HttpTaskManager.httpTaskManagerException("Error" + response.statusCode());
             }
         } catch (IOException | InterruptedException e) {
-            throw new FileBackedTasksManager.ManagerSaveException(e);
+            throw new HttpTaskManager.httpTaskManagerException(e);
         }
     }
 }
