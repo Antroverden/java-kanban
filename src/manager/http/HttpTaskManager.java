@@ -70,7 +70,10 @@ public class HttpTaskManager extends FileBackedTasksManager {
             if (taskId > id) {
                 id = taskId;
             }
-            if (type.equals(TaskType.EPIC)) {
+            if (type.equals(TaskType.TASK)) {
+                this.tasks.put(task.getId(), task);
+                prioritizedTasks.add(task);
+            } else if (type.equals(TaskType.EPIC)) {
                 Epic epic = (Epic) task;
                 epicTasks.put(epic.getId(), epic);
                 prioritizedTasks.add(epic);
@@ -80,9 +83,6 @@ public class HttpTaskManager extends FileBackedTasksManager {
                 Epic epic = epicTasks.get(subtask.getEpicId());
                 epic.addSubTask(subtask.getId());
                 prioritizedTasks.add(subtask);
-            } else {
-                this.tasks.put(task.getId(), task);
-                prioritizedTasks.add(task);
             }
         }
     }
