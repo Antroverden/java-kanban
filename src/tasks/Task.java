@@ -9,11 +9,8 @@ public class Task {
     protected String description;
     protected int id;
     protected Status status;
-
     protected TaskType type;
-
     protected long duration;
-
     protected LocalDateTime startTime;
 
     public Task(String name, String description, Status status, long duration, LocalDateTime startTime) {

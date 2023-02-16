@@ -25,11 +25,8 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
 
     static HttpTaskServer server;
     HttpTaskManager httpTaskManager1;
-
     static KVServer kvServer;
-
     String url = "http://localhost:8080/";
-
     Gson gson = new Gson();
 
     @BeforeEach

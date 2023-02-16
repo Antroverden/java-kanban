@@ -17,18 +17,17 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
     private final Gson gson;
     private final KVTaskClient client;
-
-    public static final String keyTasks = "tasks";
-    public static final String keySubtasks = "subtasks";
-    public static final String keyEpics = "epics";
-    public static final String keyHistory = "history";
-    public static final Type arrayListTaskType = new TypeToken<ArrayList<Task>>() {
+    private static final String KEY_TASKS = "tasks";
+    private static final String KEY_SUBTASKS = "subtasks";
+    private static final String KEY_EPICS = "epics";
+    private static final String KEY_HISTORY = "history";
+    private static final Type ARRAY_LIST_TASK_TYPE = new TypeToken<ArrayList<Task>>() {
     }.getType();
-    public static final Type arrayListSubtaskType = new TypeToken<ArrayList<Subtask>>() {
+    private static final Type ARRAY_LIST_SUBTASK_TYPE = new TypeToken<ArrayList<Subtask>>() {
     }.getType();
-    public static final Type arrayListEpicType = new TypeToken<ArrayList<Epic>>() {
+    private static final Type ARRAY_LIST_EPIC_TYPE = new TypeToken<ArrayList<Epic>>() {
     }.getType();
-    public static final Type arrayListHistoryType = new TypeToken<ArrayList<Integer>>() {
+    private static final Type ARRAY_LIST_HISTORY_TYPE = new TypeToken<ArrayList<Integer>>() {
     }.getType();
 
     public HttpTaskManager(String url, boolean load) {
@@ -54,14 +53,14 @@ public class HttpTaskManager extends FileBackedTasksManager {
     @Override
     protected void save() {
         String jsonTasks = gson.toJson(new ArrayList<>(tasks.values()));
-        client.put(keyTasks, jsonTasks);
+        client.put(KEY_TASKS, jsonTasks);
         String jsonSubtasks = gson.toJson(new ArrayList<>(subtasks.values()));
-        client.put(keySubtasks, jsonSubtasks);
+        client.put(KEY_SUBTASKS, jsonSubtasks);
         String jsonEpics = gson.toJson(new ArrayList<>(epicTasks.values()));
-        client.put(keyEpics, jsonEpics);
+        client.put(KEY_EPICS, jsonEpics);
         String jsonHistory = gson.toJson(historyManager.getHistory().stream()
                 .map(Task::getId).collect(Collectors.toList()));
-        client.put(keyHistory, jsonHistory);
+        client.put(KEY_HISTORY, jsonHistory);
     }
 
     private void addTasks(List<? extends Task> tasks) {
@@ -89,13 +88,13 @@ public class HttpTaskManager extends FileBackedTasksManager {
     }
 
     private void loadFromServer() {
-        ArrayList<Task> tasks = gson.fromJson(client.load(keyTasks), arrayListTaskType);
+        ArrayList<Task> tasks = gson.fromJson(client.load(KEY_TASKS), ARRAY_LIST_TASK_TYPE);
         addTasks(tasks);
-        ArrayList<Epic> epics = gson.fromJson(client.load(keyEpics), arrayListEpicType);
+        ArrayList<Epic> epics = gson.fromJson(client.load(KEY_EPICS), ARRAY_LIST_EPIC_TYPE);
         addTasks(epics);
-        ArrayList<Subtask> subtasks = gson.fromJson(client.load(keySubtasks), arrayListSubtaskType);
+        ArrayList<Subtask> subtasks = gson.fromJson(client.load(KEY_SUBTASKS), ARRAY_LIST_SUBTASK_TYPE);
         addTasks(subtasks);
-        List<Integer> history = gson.fromJson(client.load(keyHistory), arrayListHistoryType);
+        List<Integer> history = gson.fromJson(client.load(KEY_HISTORY), ARRAY_LIST_HISTORY_TYPE);
         for (Integer id : history) {
             if (this.tasks.containsKey(id)) {
                 historyManager.add(this.tasks.get(id));

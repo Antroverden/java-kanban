@@ -17,24 +17,16 @@ import static tasks.Status.*;
 abstract class TaskManagerTest<T extends TaskManager> {
 
     protected T taskManager;
-
     protected Task task1;
-
     protected Task task2;
-
     protected Task task3;
-
     protected Epic epic1;
     protected Epic epic2;
-
     protected Subtask subtask5;
     protected Subtask subtask6;
     protected Subtask subtask7;
-
     File file;
-
     LocalDateTime qq = LocalDateTime.of(2022, 2, 7, 21, 46);
-
 
     void initializeTasks() {
         task1 = new Task("one", "task one", Status.NEW);

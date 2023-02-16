@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class HistoryManagerTest {
 
     protected HistoryManager historyManager;
-
     protected Task task1;
     protected Task task2;
     protected Task task3;

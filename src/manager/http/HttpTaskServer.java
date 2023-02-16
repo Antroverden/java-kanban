@@ -14,7 +14,7 @@ import java.util.List;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class HttpTaskServer {
-    public static final int PORT = 8080;
+    private static final int PORT = 8080;
     private final HttpServer server;
     private final Gson gson;
     public final HttpTaskManager taskManager;
